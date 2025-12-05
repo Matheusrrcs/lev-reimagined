@@ -9,7 +9,7 @@ const services = [
     icon: Apple,
     title: "Nutricionista",
     description:
-      "Nutrição é fornecer componentes fundamentais para organismos em pleno funcionamento, promovendo saúde através da alimentação balanceada.",
+      "Plano alimentar personalizado para reeducação alimentar, emagrecimento saudável e qualidade de vida.",
     slug: "nutricionista",
     color: "from-emerald-500 to-teal-500",
   },
@@ -17,7 +17,7 @@ const services = [
     icon: Activity,
     title: "Nutrólogo",
     description:
-      "Especialidade médica que estuda e trata doenças relacionadas à nutrição com abordagem clínica e personalizada.",
+      "Especialidade médica que trata doenças nutricionais com prescrição de exames e suplementação.",
     slug: "nutrologo",
     color: "from-teal-500 to-cyan-500",
   },
@@ -25,7 +25,7 @@ const services = [
     icon: Dumbbell,
     title: "Educador Físico",
     description:
-      "Promoção da saúde e desenvolvimento social através de atividades físicas personalizadas para seu perfil.",
+      "Treinos personalizados para condicionamento, emagrecimento, ganho de massa e performance.",
     slug: "educador-fisico",
     color: "from-cyan-500 to-blue-500",
   },
@@ -33,7 +33,7 @@ const services = [
     icon: Brain,
     title: "Psicólogo",
     description:
-      "Estudo da mente e comportamento humano, promovendo bem-estar emocional e qualidade de vida.",
+      "Terapia online para ansiedade, estresse, autoconhecimento e desenvolvimento pessoal.",
     slug: "psicologo",
     color: "from-blue-500 to-indigo-500",
   },

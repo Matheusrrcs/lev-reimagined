@@ -4,35 +4,104 @@ import { CTASection } from "@/components/CTASection";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ShoppingBag, Leaf, Pill, Heart, Sparkles } from "lucide-react";
-import productsImage from "@/assets/products-hero.jpg";
+import { ExternalLink, ShoppingBag, Leaf, Award, Truck, Shield, Star, ArrowUpRight } from "lucide-react";
 
-const productCategories = [
+const partners = [
   {
-    icon: Leaf,
-    title: "Suplementos Naturais",
-    description: "Vitaminas e minerais essenciais para seu bem-estar diário.",
-    items: ["Multivitamínicos", "Ômega 3", "Vitamina D", "Probióticos"],
+    name: "Growth Supplements",
+    description: "Suplementos de alta qualidade para nutrição esportiva e saúde. Whey protein, creatina, vitaminas e muito mais.",
+    category: "Suplementação Esportiva",
+    url: "https://www.gsuplementos.com.br",
+    features: ["Frete grátis acima de R$99", "Produtos nacionais", "Alta pureza"],
+    gradient: "from-emerald-500 to-teal-500",
   },
   {
-    icon: Pill,
-    title: "Suplementação Esportiva",
-    description: "Produtos para potencializar seus resultados nos treinos.",
-    items: ["Whey Protein", "BCAA", "Creatina", "Pré-treino"],
+    name: "Vitafor",
+    description: "Líder em suplementos naturais e vitaminas. Produtos para imunidade, energia e bem-estar geral.",
+    category: "Vitaminas e Minerais",
+    url: "https://www.vitafor.com.br",
+    features: ["Qualidade premium", "Fórmulas exclusivas", "Aprovado ANVISA"],
+    gradient: "from-teal-500 to-cyan-500",
   },
   {
-    icon: Heart,
-    title: "Saúde Cardiovascular",
-    description: "Cuidados específicos para o coração e sistema circulatório.",
-    items: ["Coenzima Q10", "Magnésio", "Óleo de Peixe", "Alho em cápsula"],
+    name: "Essential Nutrition",
+    description: "Suplementos premium com ingredientes de alta biodisponibilidade. Foco em qualidade e eficácia.",
+    category: "Nutrição Premium",
+    url: "https://www.essentialnutrition.com.br",
+    features: ["Ingredientes importados", "Clean label", "Sem aditivos"],
+    gradient: "from-cyan-500 to-blue-500",
   },
   {
-    icon: Sparkles,
-    title: "Bem-estar e Beleza",
-    description: "Produtos para cabelo, pele e saúde estética.",
-    items: ["Colágeno", "Biotina", "Antioxidantes", "Ácido Hialurônico"],
+    name: "Puravida",
+    description: "Produtos naturais e orgânicos para uma vida mais saudável. Superfoods, colágenos e suplementos naturais.",
+    category: "Produtos Naturais",
+    url: "https://www.puravida.com.br",
+    features: ["100% Natural", "Orgânicos", "Veganos disponíveis"],
+    gradient: "from-green-500 to-emerald-500",
+  },
+  {
+    name: "Loja do Suplemento",
+    description: "Grande variedade de marcas e produtos com preços competitivos. Entrega rápida para todo Brasil.",
+    category: "Multi-marcas",
+    url: "https://www.lojadosuplemento.com.br",
+    features: ["Melhores preços", "Várias marcas", "Entrega rápida"],
+    gradient: "from-orange-500 to-amber-500",
+  },
+  {
+    name: "Farmácia de Manipulação",
+    description: "Fórmulas personalizadas conforme prescrição médica. Manipulados de alta qualidade.",
+    category: "Manipulados",
+    url: "https://wa.me/557197218432",
+    features: ["Prescrição personalizada", "Qualidade garantida", "Acompanhamento"],
+    gradient: "from-purple-500 to-pink-500",
   },
 ];
+
+const benefits = [
+  {
+    icon: Award,
+    title: "Parceiros Selecionados",
+    description: "Indicamos apenas lojas e marcas que conhecemos e confiamos na qualidade dos produtos.",
+  },
+  {
+    icon: Shield,
+    title: "Segurança na Compra",
+    description: "Todos os parceiros são estabelecimentos confiáveis com garantia de procedência.",
+  },
+  {
+    icon: Truck,
+    title: "Entrega em Todo Brasil",
+    description: "Nossos parceiros entregam em todo o território nacional com rapidez.",
+  },
+  {
+    icon: Star,
+    title: "Prescrição Personalizada",
+    description: "Os produtos são indicados de acordo com sua consulta e necessidades específicas.",
+  },
+];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut" as const,
+    },
+  },
+};
 
 const Products = () => {
   return (
@@ -40,56 +109,70 @@ const Products = () => {
       <Navbar />
       <main className="pt-20">
         {/* Hero Section */}
-        <section className="py-24 gradient-subtle">
-          <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
+        <section className="py-28 gradient-subtle relative overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="max-w-3xl mx-auto text-center"
+            >
+              <motion.span
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-primary/10 text-primary mb-6"
               >
-                <h1 className="text-5xl md:text-6xl font-display font-bold text-foreground mb-6">
-                  Produtos de{" "}
-                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                    Qualidade
-                  </span>
-                </h1>
-                <p className="text-xl text-muted-foreground leading-relaxed mb-6">
-                  Descubra nossa linha completa de suplementos e produtos para saúde, cuidadosamente
-                  selecionados por nossos especialistas para complementar seu tratamento.
-                </p>
-                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                  Todos os produtos são de marcas confiáveis e recomendados de acordo com suas
-                  necessidades individuais durante a consulta com nossos profissionais.
-                </p>
-                <Button size="lg" asChild>
-                  <a href="https://wa.me/557197218432" target="_blank" rel="noopener noreferrer">
-                    <ShoppingBag className="mr-2 h-5 w-5" />
-                    Consultar Disponibilidade
-                  </a>
-                </Button>
-              </motion.div>
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Parceiros Recomendados
+              </motion.span>
+              
+              <h1 className="text-5xl md:text-6xl font-display font-bold text-foreground mb-6">
+                Onde Comprar seus{" "}
+                <span className="text-gradient">Suplementos</span>
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed mb-4">
+                Indicamos lojas e marcas de confiança para você adquirir os produtos prescritos em sua consulta com total segurança.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Todos os parceiros foram selecionados por nossa equipe levando em consideração qualidade, procedência e atendimento.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative"
-              >
-                <div className="rounded-3xl overflow-hidden shadow-card-hover">
-                  <img
-                    src={productsImage}
-                    alt="Produtos de saúde e bem-estar da Clínica Levin"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </motion.div>
+        {/* Benefits */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {benefits.map((benefit, index) => (
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="p-6 h-full text-center border-border/50 bg-card/50 hover-lift">
+                    <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-4">
+                      <benefit.icon className="w-7 h-7 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-lg font-display font-bold text-foreground mb-2">
+                      {benefit.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Products Categories */}
-        <section className="py-24 bg-background">
+        {/* Partners Grid */}
+        <section className="py-24 bg-muted/30">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -99,60 +182,72 @@ const Products = () => {
               className="text-center max-w-3xl mx-auto mb-16"
             >
               <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-                Nossas Categorias
+                Lojas <span className="text-gradient">Parceiras</span>
               </h2>
               <p className="text-lg text-muted-foreground">
-                Produtos selecionados para cada necessidade de saúde e bem-estar.
+                Clique para acessar o site de cada parceiro e adquirir seus produtos com segurança.
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {productCategories.map((category, index) => (
-                <motion.div
-                  key={category.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="p-8 h-full shadow-card hover:shadow-card-hover transition-smooth">
-                    <div className="flex items-start space-x-4 mb-6">
-                      <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
-                        <category.icon className="w-7 h-7 text-primary-foreground" />
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {partners.map((partner) => (
+                <motion.div key={partner.name} variants={cardVariants}>
+                  <a
+                    href={partner.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block h-full"
+                  >
+                    <Card className="p-6 h-full flex flex-col border-border/50 bg-card hover-lift group cursor-pointer relative overflow-hidden">
+                      <motion.div
+                        className={`absolute inset-0 bg-gradient-to-br ${partner.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+                      />
+                      
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${partner.gradient} text-white mb-3`}>
+                            {partner.category}
+                          </span>
+                          <h3 className="text-xl font-display font-bold text-foreground group-hover:text-primary transition-colors">
+                            {partner.name}
+                          </h3>
+                        </div>
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <ArrowUpRight className="w-5 h-5" />
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-2xl font-display font-bold text-foreground mb-2">
-                          {category.title}
-                        </h3>
-                        <p className="text-muted-foreground">{category.description}</p>
+                      
+                      <p className="text-muted-foreground mb-6 flex-grow text-sm leading-relaxed">
+                        {partner.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {partner.features.map((feature) => (
+                          <span
+                            key={feature}
+                            className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-muted text-muted-foreground"
+                          >
+                            <Leaf className="w-3 h-3 mr-1" />
+                            {feature}
+                          </span>
+                        ))}
                       </div>
-                    </div>
-                    <ul className="space-y-2 mb-6">
-                      {category.items.map((item) => (
-                        <li key={item} className="flex items-center text-muted-foreground">
-                          <div className="w-2 h-2 rounded-full bg-primary mr-3"></div>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                    <Button variant="outline" className="w-full" asChild>
-                      <a
-                        href="https://wa.me/557197218432"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Consultar Produtos
-                      </a>
-                    </Button>
-                  </Card>
+                    </Card>
+                  </a>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* Why Choose Our Products */}
-        <section className="py-24 gradient-subtle">
+        {/* Important Notice */}
+        <section className="py-20 bg-background">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -161,44 +256,27 @@ const Products = () => {
               transition={{ duration: 0.6 }}
               className="max-w-4xl mx-auto"
             >
-              <h2 className="text-4xl font-display font-bold text-foreground mb-12 text-center">
-                Por que escolher nossos produtos?
-              </h2>
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-full gradient-primary mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary-foreground">✓</span>
+              <Card className="p-8 md:p-12 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                  <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-8 h-8 text-primary-foreground" />
                   </div>
-                  <h3 className="font-display font-bold text-foreground mb-2">
-                    Recomendação Profissional
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Produtos indicados por nossos especialistas durante consulta
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-full gradient-primary mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary-foreground">✓</span>
+                  <div className="flex-grow">
+                    <h3 className="text-2xl font-display font-bold text-foreground mb-3">
+                      Importante: Consulte Antes de Comprar
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      A suplementação deve ser sempre orientada por um profissional de saúde. Agende sua consulta conosco antes de adquirir qualquer produto para garantir que a indicação seja adequada às suas necessidades específicas.
+                    </p>
+                    <Button asChild>
+                      <a href="https://wa.me/557197218432" target="_blank" rel="noopener noreferrer">
+                        Agendar Consulta
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </a>
+                    </Button>
                   </div>
-                  <h3 className="font-display font-bold text-foreground mb-2">
-                    Qualidade Garantida
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Marcas confiáveis e produtos certificados
-                  </p>
                 </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-full gradient-primary mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary-foreground">✓</span>
-                  </div>
-                  <h3 className="font-display font-bold text-foreground mb-2">
-                    Acompanhamento Contínuo
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Suporte durante todo o uso dos produtos
-                  </p>
-                </div>
-              </div>
+              </Card>
             </motion.div>
           </div>
         </section>
