@@ -1,0 +1,347 @@
+<?php
+/**
+ * Front Page Template
+ *
+ * @package Clinica_Levin
+ */
+
+get_header();
+?>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text animate-fadeInUp">
+                <span class="hero-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    Excelência em Saúde
+                </span>
+                
+                <h1 class="hero-title">
+                    <?php 
+                    $hero_title = get_theme_mod('hero_title', 'Sua Saúde em Primeiro Lugar');
+                    $words = explode(' ', $hero_title);
+                    $last_words = array_splice($words, -2);
+                    echo esc_html(implode(' ', $words)) . ' ';
+                    ?>
+                    <span class="highlight"><?php echo esc_html(implode(' ', $last_words)); ?></span>
+                </h1>
+                
+                <p class="hero-description">
+                    <?php echo esc_html(get_theme_mod('hero_subtitle', 'Cuidado integrado e personalizado com uma equipe multidisciplinar dedicada ao seu bem-estar físico, mental e nutricional.')); ?>
+                </p>
+                
+                <div class="hero-buttons">
+                    <?php
+                    $whatsapp = get_theme_mod('whatsapp_number', '');
+                    if ($whatsapp) :
+                    ?>
+                    <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
+                       class="btn btn-primary btn-lg" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Agendar Consulta
+                    </a>
+                    <?php endif; ?>
+                    
+                    <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="btn btn-secondary btn-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                        Conhecer Serviços
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-image-wrapper animate-fadeInUp delay-200">
+                <?php
+                $hero_image = get_theme_mod('hero_image', '');
+                if ($hero_image) :
+                ?>
+                <img src="<?php echo esc_url($hero_image); ?>" alt="<?php esc_attr_e('Equipe Clínica Levin', 'clinica-levin'); ?>" class="hero-image">
+                <?php else : ?>
+                <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/hero-doctor.jpg'); ?>" alt="<?php esc_attr_e('Equipe Clínica Levin', 'clinica-levin'); ?>" class="hero-image">
+                <?php endif; ?>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Anos de Experiência</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5000+</span>
+                        <span class="stat-label">Pacientes Atendidos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Satisfação</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section section-lg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <span class="section-badge">Nossos Serviços</span>
+            <h2 class="section-title">Cuidado Completo para Sua Saúde</h2>
+            <p class="section-description">
+                Oferecemos uma abordagem integrada com profissionais especializados 
+                para atender todas as suas necessidades de saúde.
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            <?php
+            $services = new WP_Query(array(
+                'post_type'      => 'servico',
+                'posts_per_page' => 3,
+                'orderby'        => 'menu_order',
+                'order'          => 'ASC',
+            ));
+            
+            if ($services->have_posts()) :
+                $delay = 0;
+                while ($services->have_posts()) : $services->the_post();
+            ?>
+            <article class="service-card animate-on-scroll" style="animation-delay: <?php echo $delay * 0.1; ?>s;">
+                <?php if (has_post_thumbnail()) : ?>
+                <img src="<?php the_post_thumbnail_url('service-card'); ?>" alt="<?php the_title_attribute(); ?>" class="service-image">
+                <?php endif; ?>
+                
+                <div class="service-content">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </div>
+                    <h3 class="service-title"><?php the_title(); ?></h3>
+                    <p class="service-description"><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
+                    <a href="<?php the_permalink(); ?>" class="btn btn-outline">
+                        Saiba Mais
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </article>
+            <?php
+                $delay++;
+                endwhile;
+                wp_reset_postdata();
+            else :
+                // Default services if no custom post type entries
+                $default_services = array(
+                    array(
+                        'title' => 'Consulta Nutricional',
+                        'description' => 'Planos alimentares personalizados para suas necessidades e objetivos de saúde.',
+                        'icon' => 'apple',
+                    ),
+                    array(
+                        'title' => 'Psicologia',
+                        'description' => 'Suporte emocional e mental com profissionais qualificados e experientes.',
+                        'icon' => 'brain',
+                    ),
+                    array(
+                        'title' => 'Medicina Esportiva',
+                        'description' => 'Avaliação e acompanhamento para atletas e praticantes de atividades físicas.',
+                        'icon' => 'activity',
+                    ),
+                );
+                
+                foreach ($default_services as $index => $service) :
+            ?>
+            <article class="service-card animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                <div class="service-content">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </div>
+                    <h3 class="service-title"><?php echo esc_html($service['title']); ?></h3>
+                    <p class="service-description"><?php echo esc_html($service['description']); ?></p>
+                    <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="btn btn-outline">
+                        Saiba Mais
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </article>
+            <?php
+                endforeach;
+            endif;
+            ?>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="btn btn-primary btn-lg">
+                Ver Todos os Serviços
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- About Section Preview -->
+<section class="about-section section-lg">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-image-wrapper animate-on-scroll">
+                <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/about-clinic.jpg'); ?>" alt="<?php esc_attr_e('Clínica Levin', 'clinica-levin'); ?>" class="about-image">
+            </div>
+            
+            <div class="about-content animate-on-scroll">
+                <span class="section-badge">Sobre Nós</span>
+                <h2 class="section-title">Cuidando da Sua Saúde há Mais de 15 Anos</h2>
+                <p>
+                    A Clínica Levin nasceu com o propósito de oferecer um atendimento 
+                    humanizado e integrado, reunindo profissionais de diversas especialidades 
+                    para cuidar da sua saúde de forma completa.
+                </p>
+                <p>
+                    Nossa equipe multidisciplinar trabalha de forma coordenada para 
+                    proporcionar o melhor tratamento, considerando todos os aspectos 
+                    da sua saúde física e mental.
+                </p>
+                
+                <div class="about-features">
+                    <div class="about-feature">
+                        <div class="about-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="about-feature-title">Atendimento Humanizado</h4>
+                            <p class="about-feature-text">Cuidado personalizado para cada paciente</p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-feature">
+                        <div class="about-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="about-feature-title">Equipe Especializada</h4>
+                            <p class="about-feature-text">Profissionais com anos de experiência</p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-feature">
+                        <div class="about-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="about-feature-title">Consultas Online</h4>
+                            <p class="about-feature-text">Atendimento remoto com qualidade</p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-feature">
+                        <div class="about-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="about-feature-title">Abordagem Integrada</h4>
+                            <p class="about-feature-text">Cuidado multidisciplinar completo</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="<?php echo esc_url(home_url('/sobre')); ?>" class="btn btn-primary mt-4">
+                    Conhecer Nossa História
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Blog Posts -->
+<section class="section-lg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <span class="section-badge">Blog</span>
+            <h2 class="section-title">Últimas do Blog</h2>
+            <p class="section-description">
+                Artigos e dicas para você cuidar melhor da sua saúde no dia a dia.
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            <?php
+            $blog_posts = new WP_Query(array(
+                'post_type'      => 'post',
+                'posts_per_page' => 3,
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+            ));
+            
+            if ($blog_posts->have_posts()) :
+                while ($blog_posts->have_posts()) : $blog_posts->the_post();
+            ?>
+            <article class="card animate-on-scroll">
+                <?php if (has_post_thumbnail()) : ?>
+                <img src="<?php the_post_thumbnail_url('blog-card'); ?>" alt="<?php the_title_attribute(); ?>" class="card-image">
+                <?php endif; ?>
+                
+                <span class="section-badge" style="font-size: 0.75rem;">
+                    <?php
+                    $categories = get_the_category();
+                    if (!empty($categories)) {
+                        echo esc_html($categories[0]->name);
+                    }
+                    ?>
+                </span>
+                
+                <h3 class="card-title mt-2"><?php the_title(); ?></h3>
+                <p class="card-text"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
+                
+                <a href="<?php the_permalink(); ?>" class="btn btn-outline mt-3">
+                    Ler Artigo
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </article>
+            <?php
+                endwhile;
+                wp_reset_postdata();
+            else :
+            ?>
+            <p class="text-center text-muted">Nenhum artigo publicado ainda.</p>
+            <?php endif; ?>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="<?php echo esc_url(home_url('/blog')); ?>" class="btn btn-secondary btn-lg">
+                Ver Todos os Artigos
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section section-lg">
+    <div class="container">
+        <div class="cta-content animate-on-scroll">
+            <h2 class="cta-title">Pronto para Cuidar da Sua Saúde?</h2>
+            <p class="cta-description">
+                Agende sua consulta agora mesmo e dê o primeiro passo para uma vida mais saudável. 
+                Nossa equipe está pronta para recebê-lo.
+            </p>
+            <div class="cta-buttons">
+                <?php
+                $whatsapp = get_theme_mod('whatsapp_number', '');
+                if ($whatsapp) :
+                ?>
+                <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
+                   class="btn btn-white btn-lg" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Agendar via WhatsApp
+                </a>
+                <?php endif; ?>
+                
+                <a href="<?php echo esc_url(home_url('/contato')); ?>" class="btn btn-outline-white btn-lg">
+                    Fale Conosco
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php get_footer(); ?>

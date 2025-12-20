@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<?php bloginfo('description'); ?>">
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <?php wp_head(); ?>
+</head>
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
+
+<header class="site-header" id="site-header">
+    <div class="container">
+        <div class="header-inner">
+            <!-- Logo -->
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="site-logo">
+                <?php
+                if (has_custom_logo()) {
+                    the_custom_logo();
+                } else {
+                    echo esc_html(get_bloginfo('name'));
+                }
+                ?>
+            </a>
+
+            <!-- Navigation -->
+            <nav class="main-nav" id="main-nav" aria-label="<?php esc_attr_e('Menu Principal', 'clinica-levin'); ?>">
+                <?php
+                wp_nav_menu(array(
+                    'theme_location' => 'primary',
+                    'container'      => false,
+                    'items_wrap'     => '%3$s',
+                    'walker'         => new Clinica_Levin_Walker_Nav_Menu(),
+                    'fallback_cb'    => function() {
+                        ?>
+                        <a href="<?php echo esc_url(home_url('/')); ?>" class="nav-link <?php echo is_front_page() ? 'active' : ''; ?>">Início</a>
+                        <a href="<?php echo esc_url(home_url('/sobre')); ?>" class="nav-link <?php echo is_page('sobre') ? 'active' : ''; ?>">Sobre</a>
+                        <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="nav-link <?php echo is_page('servicos') || is_singular('servico') ? 'active' : ''; ?>">Serviços</a>
+                        <a href="<?php echo esc_url(home_url('/produtos')); ?>" class="nav-link <?php echo is_page('produtos') ? 'active' : ''; ?>">Produtos</a>
+                        <a href="<?php echo esc_url(home_url('/blog')); ?>" class="nav-link <?php echo is_home() || is_single() ? 'active' : ''; ?>">Blog</a>
+                        <?php
+                    }
+                ));
+                ?>
+                
+                <!-- CTA Button -->
+                <?php
+                $whatsapp = get_theme_mod('whatsapp_number', '');
+                if ($whatsapp) :
+                ?>
+                <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
+                   class="btn btn-primary" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                    Agendar Consulta
+                </a>
+                <?php endif; ?>
+            </nav>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="<?php esc_attr_e('Abrir menu', 'clinica-levin'); ?>" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main id="main-content">

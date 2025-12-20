@@ -1,0 +1,185 @@
+<?php
+/**
+ * Template Name: Página Sobre
+ *
+ * @package Clinica_Levin
+ */
+
+get_header();
+?>
+
+<!-- Hero Section -->
+<section class="hero" style="min-height: 60vh;">
+    <div class="container">
+        <div class="section-header animate-fadeInUp" style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <span class="hero-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                Nossa História
+            </span>
+            <h1 class="hero-title">
+                Conheça a <span class="highlight">Clínica Levin</span>
+            </h1>
+            <p class="hero-description" style="max-width: 600px; margin: 0 auto;">
+                Há mais de 15 anos cuidando da saúde e bem-estar de nossos pacientes 
+                com excelência, dedicação e muito carinho.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="section-lg">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-image-wrapper animate-on-scroll">
+                <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/about-clinic.jpg'); ?>" alt="<?php esc_attr_e('Clínica Levin', 'clinica-levin'); ?>" class="about-image">
+            </div>
+            
+            <div class="about-content animate-on-scroll">
+                <h2 class="section-title">Nossa Missão</h2>
+                <p>
+                    A Clínica Levin foi fundada com o propósito de transformar a forma como 
+                    as pessoas cuidam da sua saúde. Acreditamos que um atendimento humanizado, 
+                    integrado e personalizado pode fazer toda a diferença na vida de nossos pacientes.
+                </p>
+                <p>
+                    Nossa equipe multidisciplinar é formada por profissionais altamente qualificados 
+                    e comprometidos com a excelência em cada atendimento. Trabalhamos de forma 
+                    coordenada para oferecer soluções completas para sua saúde física e mental.
+                </p>
+                <p>
+                    Seja através de consultas presenciais ou online, nosso compromisso é 
+                    proporcionar o melhor cuidado possível, respeitando a individualidade 
+                    e as necessidades específicas de cada paciente.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Timeline -->
+<section class="about-section section-lg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <span class="section-badge">Nossa Trajetória</span>
+            <h2 class="section-title">Uma História de Cuidado</h2>
+        </div>
+        
+        <div class="timeline" style="max-width: 800px; margin: 0 auto;">
+            <?php
+            $timeline_items = array(
+                array('year' => '2008', 'title' => 'Fundação', 'description' => 'A Clínica Levin inicia suas atividades com foco em atendimento nutricional.'),
+                array('year' => '2012', 'title' => 'Expansão', 'description' => 'Ampliação da equipe com a inclusão de psicólogos e outros especialistas.'),
+                array('year' => '2018', 'title' => 'Consultas Online', 'description' => 'Pioneiros na implementação de teleconsultas para maior acessibilidade.'),
+                array('year' => '2023', 'title' => 'Referência Nacional', 'description' => 'Reconhecimento como uma das principais clínicas de saúde integrada do país.'),
+            );
+            
+            foreach ($timeline_items as $index => $item) :
+            ?>
+            <div class="card animate-on-scroll" style="margin-bottom: var(--spacing-lg); position: relative; padding-left: 80px;">
+                <div style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; background: var(--gradient-primary); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                    <?php echo esc_html($item['year']); ?>
+                </div>
+                <h3 class="card-title"><?php echo esc_html($item['title']); ?></h3>
+                <p class="card-text"><?php echo esc_html($item['description']); ?></p>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="section-lg">
+    <div class="container">
+        <div class="services-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <?php
+            $stats = array(
+                array('number' => '15+', 'label' => 'Anos de Experiência'),
+                array('number' => '5000+', 'label' => 'Pacientes Atendidos'),
+                array('number' => '20+', 'label' => 'Profissionais'),
+                array('number' => '98%', 'label' => 'Satisfação'),
+            );
+            
+            foreach ($stats as $stat) :
+            ?>
+            <div class="card animate-on-scroll" style="text-align: center;">
+                <div class="stat-number" style="font-size: 2.5rem;"><?php echo esc_html($stat['number']); ?></div>
+                <p class="stat-label"><?php echo esc_html($stat['label']); ?></p>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<!-- Values -->
+<section class="about-section section-lg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <span class="section-badge">Nossos Valores</span>
+            <h2 class="section-title">O Que Nos Move</h2>
+        </div>
+        
+        <div class="services-grid">
+            <?php
+            $values = array(
+                array(
+                    'title' => 'Excelência',
+                    'description' => 'Buscamos constantemente a melhoria contínua em todos os aspectos do nosso atendimento.',
+                    'icon' => 'star',
+                ),
+                array(
+                    'title' => 'Humanização',
+                    'description' => 'Cada paciente é único e merece ser tratado com respeito, empatia e dedicação.',
+                    'icon' => 'heart',
+                ),
+                array(
+                    'title' => 'Integridade',
+                    'description' => 'Atuamos com ética e transparência em todas as nossas relações.',
+                    'icon' => 'shield',
+                ),
+            );
+            
+            foreach ($values as $value) :
+            ?>
+            <div class="card animate-on-scroll">
+                <div class="service-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                </div>
+                <h3 class="card-title"><?php echo esc_html($value['title']); ?></h3>
+                <p class="card-text"><?php echo esc_html($value['description']); ?></p>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section section-lg">
+    <div class="container">
+        <div class="cta-content animate-on-scroll">
+            <h2 class="cta-title">Faça Parte da Nossa História</h2>
+            <p class="cta-description">
+                Agende sua consulta e descubra como podemos ajudá-lo a alcançar 
+                seus objetivos de saúde e bem-estar.
+            </p>
+            <div class="cta-buttons">
+                <?php
+                $whatsapp = get_theme_mod('whatsapp_number', '');
+                if ($whatsapp) :
+                ?>
+                <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
+                   class="btn btn-white btn-lg" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                    Agendar Consulta
+                </a>
+                <?php endif; ?>
+                <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="btn btn-outline-white btn-lg">
+                    Ver Serviços
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php get_footer(); ?>
