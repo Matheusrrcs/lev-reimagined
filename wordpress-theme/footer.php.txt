@@ -1,0 +1,198 @@
+</main><!-- #main-content -->
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- Brand Column -->
+            <div class="footer-brand">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="site-logo">
+                    <?php echo esc_html(get_bloginfo('name')); ?>
+                </a>
+                <p class="footer-description">
+                    Cuidado integrado e personalizado para sua saúde e bem-estar. 
+                    Nossa equipe multidisciplinar está pronta para ajudá-lo a alcançar 
+                    seus objetivos de saúde.
+                </p>
+                <div class="footer-social">
+                    <?php
+                    $social_links = clinica_levin_get_social_links();
+                    foreach ($social_links as $network => $url) :
+                        if (!empty($url)) :
+                    ?>
+                    <a href="<?php echo esc_url($url); ?>" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr(ucfirst($network)); ?>">
+                        <?php if ($network === 'instagram') : ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        <?php elseif ($network === 'facebook') : ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        <?php elseif ($network === 'youtube') : ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+                        <?php elseif ($network === 'linkedin') : ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                        <?php endif; ?>
+                    </a>
+                    <?php
+                        endif;
+                    endforeach;
+                    ?>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-column">
+                <h4 class="footer-title"><?php esc_html_e('Links Rápidos', 'clinica-levin'); ?></h4>
+                <ul class="footer-links">
+                    <li><a href="<?php echo esc_url(home_url('/')); ?>"><?php esc_html_e('Início', 'clinica-levin'); ?></a></li>
+                    <li><a href="<?php echo esc_url(home_url('/sobre')); ?>"><?php esc_html_e('Sobre Nós', 'clinica-levin'); ?></a></li>
+                    <li><a href="<?php echo esc_url(home_url('/servicos')); ?>"><?php esc_html_e('Serviços', 'clinica-levin'); ?></a></li>
+                    <li><a href="<?php echo esc_url(home_url('/produtos')); ?>"><?php esc_html_e('Produtos', 'clinica-levin'); ?></a></li>
+                    <li><a href="<?php echo esc_url(home_url('/blog')); ?>"><?php esc_html_e('Blog', 'clinica-levin'); ?></a></li>
+                </ul>
+            </div>
+
+            <!-- Services -->
+            <div class="footer-column">
+                <h4 class="footer-title"><?php esc_html_e('Serviços', 'clinica-levin'); ?></h4>
+                <ul class="footer-links">
+                    <?php
+                    $services = new WP_Query(array(
+                        'post_type'      => 'servico',
+                        'posts_per_page' => 5,
+                        'orderby'        => 'menu_order',
+                        'order'          => 'ASC',
+                    ));
+                    
+                    if ($services->have_posts()) :
+                        while ($services->have_posts()) : $services->the_post();
+                    ?>
+                    <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+                    <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    else :
+                    ?>
+                    <li><a href="#">Consulta Nutricional</a></li>
+                    <li><a href="#">Psicologia</a></li>
+                    <li><a href="#">Medicina Esportiva</a></li>
+                    <li><a href="#">Fisioterapia</a></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="footer-column">
+                <h4 class="footer-title"><?php esc_html_e('Contato', 'clinica-levin'); ?></h4>
+                <ul class="footer-links">
+                    <?php
+                    $phone = get_theme_mod('contact_phone', '');
+                    $email = get_theme_mod('contact_email', '');
+                    $address = get_theme_mod('contact_address', '');
+                    
+                    if ($phone) :
+                    ?>
+                    <li>
+                        <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9]/', '', $phone)); ?>">
+                            <?php echo esc_html($phone); ?>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
+                    <?php if ($email) : ?>
+                    <li>
+                        <a href="mailto:<?php echo esc_attr($email); ?>">
+                            <?php echo esc_html($email); ?>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
+                    <?php if ($address) : ?>
+                    <li><?php echo esc_html($address); ?></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <p class="footer-copyright">
+                &copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. 
+                <?php esc_html_e('Todos os direitos reservados.', 'clinica-levin'); ?>
+            </p>
+            <div class="footer-legal">
+                <a href="<?php echo esc_url(home_url('/politica-de-privacidade')); ?>">
+                    <?php esc_html_e('Política de Privacidade', 'clinica-levin'); ?>
+                </a>
+                <a href="<?php echo esc_url(home_url('/termos-de-uso')); ?>">
+                    <?php esc_html_e('Termos de Uso', 'clinica-levin'); ?>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<?php wp_footer(); ?>
+
+<script>
+// Header scroll effect
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.getElementById('site-header');
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+
+    // Scroll effect
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // Mobile menu toggle
+    if (mobileToggle && mainNav) {
+        mobileToggle.addEventListener('click', function() {
+            const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+            mobileToggle.setAttribute('aria-expanded', !isExpanded);
+            mainNav.classList.toggle('active');
+        });
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(targetId);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fadeInUp');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+});
+</script>
+
+</body>
+</html>

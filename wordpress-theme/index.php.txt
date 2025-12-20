@@ -1,0 +1,150 @@
+<?php
+/**
+ * The main template file
+ *
+ * @package Clinica_Levin
+ */
+
+get_header();
+?>
+
+<!-- Blog Hero -->
+<section class="hero" style="min-height: 40vh;">
+    <div class="container">
+        <div class="section-header animate-fadeInUp" style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <span class="hero-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                Blog
+            </span>
+            <h1 class="hero-title">
+                Saúde e <span class="highlight">Bem-Estar</span>
+            </h1>
+            <p class="hero-description" style="max-width: 600px; margin: 0 auto;">
+                Artigos, dicas e informações para ajudá-lo a cuidar melhor da sua saúde no dia a dia.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Posts Grid -->
+<section class="section-lg">
+    <div class="container">
+        <?php if (have_posts()) : ?>
+        
+        <!-- Category Filter -->
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: var(--spacing-sm); margin-bottom: var(--spacing-2xl);">
+            <a href="<?php echo get_permalink(get_option('page_for_posts')); ?>" class="btn btn-primary">
+                Todos
+            </a>
+            <?php
+            $categories = get_categories(array('hide_empty' => true));
+            foreach ($categories as $category) :
+            ?>
+            <a href="<?php echo get_category_link($category->term_id); ?>" class="btn btn-secondary">
+                <?php echo esc_html($category->name); ?>
+            </a>
+            <?php endforeach; ?>
+        </div>
+        
+        <div class="services-grid">
+            <?php 
+            $index = 0;
+            while (have_posts()) : the_post(); 
+            ?>
+            <article class="card animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                <?php if (has_post_thumbnail()) : ?>
+                <a href="<?php the_permalink(); ?>">
+                    <img src="<?php the_post_thumbnail_url('blog-card'); ?>" alt="<?php the_title_attribute(); ?>" class="card-image">
+                </a>
+                <?php endif; ?>
+                
+                <div style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-xs);">
+                    <?php
+                    $post_categories = get_the_category();
+                    if (!empty($post_categories)) :
+                    ?>
+                    <span class="section-badge" style="font-size: 0.75rem;">
+                        <?php echo esc_html($post_categories[0]->name); ?>
+                    </span>
+                    <?php endif; ?>
+                </div>
+                
+                <h3 class="card-title">
+                    <a href="<?php the_permalink(); ?>" style="text-decoration: none; color: inherit;">
+                        <?php the_title(); ?>
+                    </a>
+                </h3>
+                
+                <p class="card-text"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-md);">
+                    <span style="font-size: 0.75rem; color: hsl(var(--muted-foreground));">
+                        <?php echo get_the_date(); ?>
+                    </span>
+                    <a href="<?php the_permalink(); ?>" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                        Ler
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </article>
+            <?php 
+            $index++;
+            endwhile; 
+            ?>
+        </div>
+
+        <!-- Pagination -->
+        <div style="margin-top: var(--spacing-2xl); display: flex; justify-content: center;">
+            <?php
+            the_posts_pagination(array(
+                'mid_size'  => 2,
+                'prev_text' => '← Anterior',
+                'next_text' => 'Próximo →',
+            ));
+            ?>
+        </div>
+
+        <?php else : ?>
+        <div class="card" style="text-align: center; max-width: 500px; margin: 0 auto;">
+            <h3 class="card-title">Nenhum artigo encontrado</h3>
+            <p class="card-text">Ainda não há artigos publicados.</p>
+        </div>
+        <?php endif; ?>
+    </div>
+</section>
+
+<style>
+/* Pagination Styles */
+.navigation.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 0.75rem;
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.page-numbers:hover,
+.page-numbers.current {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+</style>
+
+<?php get_footer(); ?>

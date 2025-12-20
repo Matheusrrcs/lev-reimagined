@@ -1,0 +1,546 @@
+<?php
+/**
+ * Clinica Levin Theme Functions
+ *
+ * @package Clinica_Levin
+ * @version 1.0.0
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Theme Setup
+ */
+function clinica_levin_setup() {
+    // Add default posts and comments RSS feed links to head
+    add_theme_support('automatic-feed-links');
+
+    // Let WordPress manage the document title
+    add_theme_support('title-tag');
+
+    // Enable support for Post Thumbnails
+    add_theme_support('post-thumbnails');
+
+    // Add custom image sizes
+    add_image_size('hero-image', 1200, 800, true);
+    add_image_size('service-card', 600, 400, true);
+    add_image_size('blog-card', 400, 250, true);
+
+    // Register navigation menus
+    register_nav_menus(array(
+        'primary' => __('Menu Principal', 'clinica-levin'),
+        'footer'  => __('Menu Rodapé', 'clinica-levin'),
+    ));
+
+    // Switch default core markup to output valid HTML5
+    add_theme_support('html5', array(
+        'search-form',
+        'comment-form',
+        'comment-list',
+        'gallery',
+        'caption',
+        'style',
+        'script',
+    ));
+
+    // Add support for custom logo
+    add_theme_support('custom-logo', array(
+        'height'      => 100,
+        'width'       => 300,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ));
+
+    // Add support for full and wide align images
+    add_theme_support('align-wide');
+
+    // Add support for editor styles
+    add_theme_support('editor-styles');
+
+    // Add support for responsive embeds
+    add_theme_support('responsive-embeds');
+
+    // Add support for custom background
+    add_theme_support('custom-background', array(
+        'default-color' => 'f8fafb',
+    ));
+}
+add_action('after_setup_theme', 'clinica_levin_setup');
+
+/**
+ * Enqueue Scripts and Styles
+ */
+function clinica_levin_scripts() {
+    // Google Fonts
+    wp_enqueue_style(
+        'clinica-levin-fonts',
+        'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap',
+        array(),
+        null
+    );
+
+    // Main Stylesheet
+    wp_enqueue_style(
+        'clinica-levin-style',
+        get_stylesheet_uri(),
+        array('clinica-levin-fonts'),
+        wp_get_theme()->get('Version')
+    );
+
+    // Main JavaScript
+    wp_enqueue_script(
+        'clinica-levin-main',
+        get_template_directory_uri() . '/assets/js/main.js',
+        array(),
+        wp_get_theme()->get('Version'),
+        true
+    );
+
+    // Localize script for AJAX
+    wp_localize_script('clinica-levin-main', 'clinicaLevin', array(
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'nonce'   => wp_create_nonce('clinica_levin_nonce'),
+    ));
+}
+add_action('wp_enqueue_scripts', 'clinica_levin_scripts');
+
+/**
+ * Register Widget Areas
+ */
+function clinica_levin_widgets_init() {
+    register_sidebar(array(
+        'name'          => __('Sidebar', 'clinica-levin'),
+        'id'            => 'sidebar-1',
+        'description'   => __('Adicione widgets aqui.', 'clinica-levin'),
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h3 class="widget-title">',
+        'after_title'   => '</h3>',
+    ));
+
+    register_sidebar(array(
+        'name'          => __('Footer 1', 'clinica-levin'),
+        'id'            => 'footer-1',
+        'description'   => __('Primeira coluna do rodapé.', 'clinica-levin'),
+        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h4 class="footer-title">',
+        'after_title'   => '</h4>',
+    ));
+
+    register_sidebar(array(
+        'name'          => __('Footer 2', 'clinica-levin'),
+        'id'            => 'footer-2',
+        'description'   => __('Segunda coluna do rodapé.', 'clinica-levin'),
+        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h4 class="footer-title">',
+        'after_title'   => '</h4>',
+    ));
+
+    register_sidebar(array(
+        'name'          => __('Footer 3', 'clinica-levin'),
+        'id'            => 'footer-3',
+        'description'   => __('Terceira coluna do rodapé.', 'clinica-levin'),
+        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h4 class="footer-title">',
+        'after_title'   => '</h4>',
+    ));
+}
+add_action('widgets_init', 'clinica_levin_widgets_init');
+
+/**
+ * Custom Post Type: Serviços
+ */
+function clinica_levin_register_services() {
+    $labels = array(
+        'name'               => __('Serviços', 'clinica-levin'),
+        'singular_name'      => __('Serviço', 'clinica-levin'),
+        'menu_name'          => __('Serviços', 'clinica-levin'),
+        'add_new'            => __('Adicionar Novo', 'clinica-levin'),
+        'add_new_item'       => __('Adicionar Novo Serviço', 'clinica-levin'),
+        'edit_item'          => __('Editar Serviço', 'clinica-levin'),
+        'new_item'           => __('Novo Serviço', 'clinica-levin'),
+        'view_item'          => __('Ver Serviço', 'clinica-levin'),
+        'search_items'       => __('Buscar Serviços', 'clinica-levin'),
+        'not_found'          => __('Nenhum serviço encontrado', 'clinica-levin'),
+        'not_found_in_trash' => __('Nenhum serviço na lixeira', 'clinica-levin'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array('slug' => 'servicos'),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_position'      => 5,
+        'menu_icon'          => 'dashicons-heart',
+        'supports'           => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
+        'show_in_rest'       => true,
+    );
+
+    register_post_type('servico', $args);
+}
+add_action('init', 'clinica_levin_register_services');
+
+/**
+ * Custom Post Type: Produtos Parceiros
+ */
+function clinica_levin_register_products() {
+    $labels = array(
+        'name'               => __('Produtos', 'clinica-levin'),
+        'singular_name'      => __('Produto', 'clinica-levin'),
+        'menu_name'          => __('Produtos', 'clinica-levin'),
+        'add_new'            => __('Adicionar Novo', 'clinica-levin'),
+        'add_new_item'       => __('Adicionar Novo Produto', 'clinica-levin'),
+        'edit_item'          => __('Editar Produto', 'clinica-levin'),
+        'new_item'           => __('Novo Produto', 'clinica-levin'),
+        'view_item'          => __('Ver Produto', 'clinica-levin'),
+        'search_items'       => __('Buscar Produtos', 'clinica-levin'),
+        'not_found'          => __('Nenhum produto encontrado', 'clinica-levin'),
+        'not_found_in_trash' => __('Nenhum produto na lixeira', 'clinica-levin'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array('slug' => 'produtos'),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_position'      => 6,
+        'menu_icon'          => 'dashicons-cart',
+        'supports'           => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
+        'show_in_rest'       => true,
+    );
+
+    register_post_type('produto', $args);
+}
+add_action('init', 'clinica_levin_register_products');
+
+/**
+ * Custom Post Type: Depoimentos
+ */
+function clinica_levin_register_testimonials() {
+    $labels = array(
+        'name'               => __('Depoimentos', 'clinica-levin'),
+        'singular_name'      => __('Depoimento', 'clinica-levin'),
+        'menu_name'          => __('Depoimentos', 'clinica-levin'),
+        'add_new'            => __('Adicionar Novo', 'clinica-levin'),
+        'add_new_item'       => __('Adicionar Novo Depoimento', 'clinica-levin'),
+        'edit_item'          => __('Editar Depoimento', 'clinica-levin'),
+        'new_item'           => __('Novo Depoimento', 'clinica-levin'),
+        'view_item'          => __('Ver Depoimento', 'clinica-levin'),
+        'search_items'       => __('Buscar Depoimentos', 'clinica-levin'),
+        'not_found'          => __('Nenhum depoimento encontrado', 'clinica-levin'),
+        'not_found_in_trash' => __('Nenhum depoimento na lixeira', 'clinica-levin'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array('slug' => 'depoimentos'),
+        'capability_type'    => 'post',
+        'has_archive'        => false,
+        'hierarchical'       => false,
+        'menu_position'      => 7,
+        'menu_icon'          => 'dashicons-format-quote',
+        'supports'           => array('title', 'editor', 'thumbnail', 'custom-fields'),
+        'show_in_rest'       => true,
+    );
+
+    register_post_type('depoimento', $args);
+}
+add_action('init', 'clinica_levin_register_testimonials');
+
+/**
+ * Theme Customizer
+ */
+function clinica_levin_customize_register($wp_customize) {
+    // Hero Section
+    $wp_customize->add_section('hero_section', array(
+        'title'    => __('Seção Hero', 'clinica-levin'),
+        'priority' => 30,
+    ));
+
+    $wp_customize->add_setting('hero_title', array(
+        'default'           => 'Sua Saúde em Primeiro Lugar',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('hero_title', array(
+        'label'   => __('Título Hero', 'clinica-levin'),
+        'section' => 'hero_section',
+        'type'    => 'text',
+    ));
+
+    $wp_customize->add_setting('hero_subtitle', array(
+        'default'           => 'Cuidado integrado com excelência médica',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('hero_subtitle', array(
+        'label'   => __('Subtítulo Hero', 'clinica-levin'),
+        'section' => 'hero_section',
+        'type'    => 'textarea',
+    ));
+
+    $wp_customize->add_setting('hero_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_image', array(
+        'label'   => __('Imagem Hero', 'clinica-levin'),
+        'section' => 'hero_section',
+    )));
+
+    // Contact Information
+    $wp_customize->add_section('contact_section', array(
+        'title'    => __('Informações de Contato', 'clinica-levin'),
+        'priority' => 35,
+    ));
+
+    $wp_customize->add_setting('contact_phone', array(
+        'default'           => '(11) 99999-9999',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('contact_phone', array(
+        'label'   => __('Telefone', 'clinica-levin'),
+        'section' => 'contact_section',
+        'type'    => 'text',
+    ));
+
+    $wp_customize->add_setting('contact_email', array(
+        'default'           => 'contato@clinicalevin.com.br',
+        'sanitize_callback' => 'sanitize_email',
+    ));
+
+    $wp_customize->add_control('contact_email', array(
+        'label'   => __('E-mail', 'clinica-levin'),
+        'section' => 'contact_section',
+        'type'    => 'email',
+    ));
+
+    $wp_customize->add_setting('contact_address', array(
+        'default'           => 'São Paulo, SP',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('contact_address', array(
+        'label'   => __('Endereço', 'clinica-levin'),
+        'section' => 'contact_section',
+        'type'    => 'textarea',
+    ));
+
+    $wp_customize->add_setting('whatsapp_number', array(
+        'default'           => '5511999999999',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('whatsapp_number', array(
+        'label'       => __('WhatsApp (com código do país)', 'clinica-levin'),
+        'section'     => 'contact_section',
+        'type'        => 'text',
+        'description' => __('Ex: 5511999999999', 'clinica-levin'),
+    ));
+
+    // Social Media
+    $wp_customize->add_section('social_section', array(
+        'title'    => __('Redes Sociais', 'clinica-levin'),
+        'priority' => 40,
+    ));
+
+    $social_networks = array('instagram', 'facebook', 'youtube', 'linkedin');
+
+    foreach ($social_networks as $network) {
+        $wp_customize->add_setting('social_' . $network, array(
+            'default'           => '',
+            'sanitize_callback' => 'esc_url_raw',
+        ));
+
+        $wp_customize->add_control('social_' . $network, array(
+            'label'   => ucfirst($network),
+            'section' => 'social_section',
+            'type'    => 'url',
+        ));
+    }
+}
+add_action('customize_register', 'clinica_levin_customize_register');
+
+/**
+ * Custom Walker for Navigation Menu
+ */
+class Clinica_Levin_Walker_Nav_Menu extends Walker_Nav_Menu {
+    function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+        $classes = empty($item->classes) ? array() : (array) $item->classes;
+        $class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item));
+        
+        $is_current = in_array('current-menu-item', $classes) || in_array('current-page-ancestor', $classes);
+        
+        $output .= '<li class="' . esc_attr($class_names) . '">';
+        
+        $attributes = '';
+        if (!empty($item->url)) {
+            $attributes .= ' href="' . esc_attr($item->url) . '"';
+        }
+        
+        $link_class = 'nav-link';
+        if ($is_current) {
+            $link_class .= ' active';
+        }
+        $attributes .= ' class="' . $link_class . '"';
+        
+        $output .= '<a' . $attributes . '>';
+        $output .= apply_filters('the_title', $item->title, $item->ID);
+        $output .= '</a>';
+    }
+}
+
+/**
+ * Excerpt Length
+ */
+function clinica_levin_excerpt_length($length) {
+    return 20;
+}
+add_filter('excerpt_length', 'clinica_levin_excerpt_length');
+
+/**
+ * Excerpt More
+ */
+function clinica_levin_excerpt_more($more) {
+    return '...';
+}
+add_filter('excerpt_more', 'clinica_levin_excerpt_more');
+
+/**
+ * Add WhatsApp Button
+ */
+function clinica_levin_whatsapp_button() {
+    $whatsapp = get_theme_mod('whatsapp_number', '');
+    if ($whatsapp) :
+    ?>
+    <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
+       class="whatsapp-float" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contato via WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+    <style>
+    .whatsapp-float {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: #25D366;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+        z-index: 9999;
+        transition: all 0.3s ease;
+    }
+    .whatsapp-float:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+    }
+    </style>
+    <?php
+    endif;
+}
+add_action('wp_footer', 'clinica_levin_whatsapp_button');
+
+/**
+ * Add Schema.org Markup
+ */
+function clinica_levin_schema_markup() {
+    $schema = array(
+        '@context' => 'https://schema.org',
+        '@type'    => 'MedicalClinic',
+        'name'     => get_bloginfo('name'),
+        'url'      => home_url(),
+        'logo'     => get_theme_mod('custom_logo') ? wp_get_attachment_image_url(get_theme_mod('custom_logo'), 'full') : '',
+        'telephone' => get_theme_mod('contact_phone', ''),
+        'email'    => get_theme_mod('contact_email', ''),
+        'address'  => array(
+            '@type'           => 'PostalAddress',
+            'addressLocality' => 'São Paulo',
+            'addressRegion'   => 'SP',
+            'addressCountry'  => 'BR',
+        ),
+    );
+    
+    echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';
+}
+add_action('wp_head', 'clinica_levin_schema_markup');
+
+/**
+ * AJAX Handler for Newsletter
+ */
+function clinica_levin_newsletter_subscribe() {
+    check_ajax_referer('clinica_levin_nonce', 'nonce');
+    
+    $email = sanitize_email($_POST['email']);
+    
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'E-mail inválido.'));
+    }
+    
+    // Here you would integrate with your email marketing service
+    // For example: Mailchimp, SendinBlue, etc.
+    
+    wp_send_json_success(array('message' => 'Inscrição realizada com sucesso!'));
+}
+add_action('wp_ajax_newsletter_subscribe', 'clinica_levin_newsletter_subscribe');
+add_action('wp_ajax_nopriv_newsletter_subscribe', 'clinica_levin_newsletter_subscribe');
+
+/**
+ * Helper function to get social links
+ */
+function clinica_levin_get_social_links() {
+    return array(
+        'instagram' => get_theme_mod('social_instagram', ''),
+        'facebook'  => get_theme_mod('social_facebook', ''),
+        'youtube'   => get_theme_mod('social_youtube', ''),
+        'linkedin'  => get_theme_mod('social_linkedin', ''),
+    );
+}
+
+/**
+ * Add body classes
+ */
+function clinica_levin_body_classes($classes) {
+    if (is_front_page()) {
+        $classes[] = 'home-page';
+    }
+    
+    if (is_page()) {
+        $classes[] = 'page-' . get_post_field('post_name', get_post());
+    }
+    
+    return $classes;
+}
+add_filter('body_class', 'clinica_levin_body_classes');

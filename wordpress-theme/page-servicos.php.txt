@@ -1,0 +1,213 @@
+<?php
+/**
+ * Template Name: Página Serviços
+ *
+ * @package Clinica_Levin
+ */
+
+get_header();
+?>
+
+<!-- Hero Section -->
+<section class="hero" style="min-height: 50vh;">
+    <div class="container">
+        <div class="section-header animate-fadeInUp" style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <span class="hero-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                Nossos Serviços
+            </span>
+            <h1 class="hero-title">
+                Cuidado <span class="highlight">Completo</span> para Você
+            </h1>
+            <p class="hero-description" style="max-width: 600px; margin: 0 auto;">
+                Oferecemos uma variedade de serviços especializados para atender 
+                todas as suas necessidades de saúde e bem-estar.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="section-lg">
+    <div class="container">
+        <div class="services-grid">
+            <?php
+            $services = new WP_Query(array(
+                'post_type'      => 'servico',
+                'posts_per_page' => -1,
+                'orderby'        => 'menu_order',
+                'order'          => 'ASC',
+            ));
+            
+            if ($services->have_posts()) :
+                $index = 0;
+                while ($services->have_posts()) : $services->the_post();
+            ?>
+            <article class="service-card animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                <?php if (has_post_thumbnail()) : ?>
+                <img src="<?php the_post_thumbnail_url('service-card'); ?>" alt="<?php the_title_attribute(); ?>" class="service-image">
+                <?php endif; ?>
+                
+                <div class="service-content">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </div>
+                    <h3 class="service-title"><?php the_title(); ?></h3>
+                    <p class="service-description"><?php echo wp_trim_words(get_the_excerpt(), 25); ?></p>
+                    
+                    <?php
+                    // Custom fields for service features
+                    $features = get_post_meta(get_the_ID(), 'service_features', true);
+                    if ($features) :
+                        $features_array = explode("\n", $features);
+                    ?>
+                    <ul class="service-features">
+                        <?php foreach (array_slice($features_array, 0, 4) as $feature) : ?>
+                        <li><?php echo esc_html(trim($feature)); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
+                    
+                    <a href="<?php the_permalink(); ?>" class="btn btn-outline">
+                        Ver Detalhes
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </article>
+            <?php
+                $index++;
+                endwhile;
+                wp_reset_postdata();
+            else :
+                // Default services
+                $default_services = array(
+                    array(
+                        'title' => 'Consulta Nutricional',
+                        'description' => 'Planos alimentares personalizados desenvolvidos por nutricionistas especializados para atender seus objetivos de saúde.',
+                        'features' => array('Avaliação completa', 'Plano personalizado', 'Acompanhamento mensal', 'Suporte por WhatsApp'),
+                    ),
+                    array(
+                        'title' => 'Psicologia',
+                        'description' => 'Atendimento psicológico humanizado para cuidar da sua saúde mental com profissionais experientes.',
+                        'features' => array('Terapia individual', 'Terapia de casal', 'Atendimento online', 'Sigilo absoluto'),
+                    ),
+                    array(
+                        'title' => 'Medicina Esportiva',
+                        'description' => 'Avaliação e acompanhamento especializado para atletas e praticantes de atividades físicas.',
+                        'features' => array('Avaliação física', 'Prescrição de exercícios', 'Prevenção de lesões', 'Otimização de performance'),
+                    ),
+                    array(
+                        'title' => 'Fisioterapia',
+                        'description' => 'Tratamento fisioterapêutico para reabilitação, prevenção e melhora da qualidade de vida.',
+                        'features' => array('Fisioterapia ortopédica', 'Fisioterapia esportiva', 'RPG', 'Pilates clínico'),
+                    ),
+                    array(
+                        'title' => 'Endocrinologia',
+                        'description' => 'Diagnóstico e tratamento de distúrbios hormonais e metabólicos com abordagem integral.',
+                        'features' => array('Disfunções da tireoide', 'Diabetes', 'Obesidade', 'Saúde hormonal'),
+                    ),
+                    array(
+                        'title' => 'Dermatologia',
+                        'description' => 'Cuidados com a saúde da pele, cabelos e unhas com tratamentos modernos e eficazes.',
+                        'features' => array('Tratamentos estéticos', 'Doenças de pele', 'Prevenção do câncer', 'Procedimentos'),
+                    ),
+                );
+                
+                foreach ($default_services as $index => $service) :
+            ?>
+            <article class="service-card animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                <div class="service-content">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </div>
+                    <h3 class="service-title"><?php echo esc_html($service['title']); ?></h3>
+                    <p class="service-description"><?php echo esc_html($service['description']); ?></p>
+                    
+                    <ul class="service-features">
+                        <?php foreach ($service['features'] as $feature) : ?>
+                        <li><?php echo esc_html($feature); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    
+                    <a href="#agendar" class="btn btn-outline">
+                        Agendar Consulta
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </article>
+            <?php
+                endforeach;
+            endif;
+            ?>
+        </div>
+    </div>
+</section>
+
+<!-- How it Works -->
+<section class="about-section section-lg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <span class="section-badge">Como Funciona</span>
+            <h2 class="section-title">Simples e Prático</h2>
+        </div>
+        
+        <div class="services-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <?php
+            $steps = array(
+                array('number' => '01', 'title' => 'Agende', 'description' => 'Entre em contato pelo WhatsApp ou telefone'),
+                array('number' => '02', 'title' => 'Consulta', 'description' => 'Atendimento presencial ou online'),
+                array('number' => '03', 'title' => 'Avaliação', 'description' => 'Diagnóstico completo e personalizado'),
+                array('number' => '04', 'title' => 'Tratamento', 'description' => 'Acompanhamento contínuo e resultados'),
+            );
+            
+            foreach ($steps as $step) :
+            ?>
+            <div class="card animate-on-scroll" style="text-align: center;">
+                <div style="width: 60px; height: 60px; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.25rem; margin: 0 auto var(--spacing-md);">
+                    <?php echo esc_html($step['number']); ?>
+                </div>
+                <h3 class="card-title"><?php echo esc_html($step['title']); ?></h3>
+                <p class="card-text"><?php echo esc_html($step['description']); ?></p>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section section-lg" id="agendar">
+    <div class="container">
+        <div class="cta-content animate-on-scroll">
+            <h2 class="cta-title">Pronto para Começar?</h2>
+            <p class="cta-description">
+                Agende sua consulta agora e dê o primeiro passo para uma vida mais saudável.
+            </p>
+            <div class="cta-buttons">
+                <?php
+                $whatsapp = get_theme_mod('whatsapp_number', '');
+                if ($whatsapp) :
+                ?>
+                <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
+                   class="btn btn-white btn-lg" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Agendar via WhatsApp
+                </a>
+                <?php endif; ?>
+                
+                <?php
+                $phone = get_theme_mod('contact_phone', '');
+                if ($phone) :
+                ?>
+                <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9]/', '', $phone)); ?>" class="btn btn-outline-white btn-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Ligar Agora
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php get_footer(); ?>

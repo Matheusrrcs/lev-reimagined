@@ -1,0 +1,235 @@
+<?php
+/**
+ * Template Name: Página Produtos
+ *
+ * @package Clinica_Levin
+ */
+
+get_header();
+?>
+
+<!-- Hero Section -->
+<section class="hero" style="min-height: 50vh;">
+    <div class="container">
+        <div class="section-header animate-fadeInUp" style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <span class="hero-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Produtos Recomendados
+            </span>
+            <h1 class="hero-title">
+                Parceiros de <span class="highlight">Confiança</span>
+            </h1>
+            <p class="hero-description" style="max-width: 600px; margin: 0 auto;">
+                Selecionamos as melhores marcas e produtos para complementar seu tratamento 
+                e ajudá-lo a alcançar seus objetivos de saúde.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Important Notice -->
+<section class="section">
+    <div class="container">
+        <div class="card animate-fadeInUp" style="background: hsl(var(--primary) / 0.05); border-color: hsl(var(--primary) / 0.2); max-width: 800px; margin: 0 auto; text-align: center;">
+            <div class="service-icon" style="margin: 0 auto var(--spacing-md);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            </div>
+            <h3 class="card-title">Aviso Importante</h3>
+            <p class="card-text">
+                Os produtos listados abaixo são <strong>recomendações de sites parceiros</strong>. 
+                Antes de adquirir qualquer suplemento ou produto, consulte sempre um profissional 
+                de saúde para garantir que é adequado para suas necessidades específicas.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Products Grid -->
+<section class="section-lg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <span class="section-badge">Sites Parceiros</span>
+            <h2 class="section-title">Onde Comprar</h2>
+            <p class="section-description">
+                Confira os sites que recomendamos para aquisição de suplementos e produtos de saúde.
+            </p>
+        </div>
+        
+        <div class="services-grid">
+            <?php
+            $products = new WP_Query(array(
+                'post_type'      => 'produto',
+                'posts_per_page' => -1,
+                'orderby'        => 'menu_order',
+                'order'          => 'ASC',
+            ));
+            
+            if ($products->have_posts()) :
+                $index = 0;
+                while ($products->have_posts()) : $products->the_post();
+                    $external_url = get_post_meta(get_the_ID(), 'product_url', true);
+                    $discount = get_post_meta(get_the_ID(), 'product_discount', true);
+            ?>
+            <article class="card animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                <?php if (has_post_thumbnail()) : ?>
+                <img src="<?php the_post_thumbnail_url('medium'); ?>" alt="<?php the_title_attribute(); ?>" class="card-image">
+                <?php endif; ?>
+                
+                <?php if ($discount) : ?>
+                <span class="section-badge" style="background: hsl(var(--accent)); color: white; margin-bottom: var(--spacing-sm);">
+                    <?php echo esc_html($discount); ?>% OFF
+                </span>
+                <?php endif; ?>
+                
+                <h3 class="card-title"><?php the_title(); ?></h3>
+                <p class="card-text"><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
+                
+                <?php if ($external_url) : ?>
+                <a href="<?php echo esc_url($external_url); ?>" class="btn btn-primary mt-3" target="_blank" rel="noopener noreferrer">
+                    Visitar Site
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+                </a>
+                <?php endif; ?>
+            </article>
+            <?php
+                $index++;
+                endwhile;
+                wp_reset_postdata();
+            else :
+                // Default partner sites
+                $partners = array(
+                    array(
+                        'name' => 'Growth Supplements',
+                        'description' => 'Suplementos de alta qualidade para performance esportiva e saúde geral.',
+                        'url' => 'https://www.gsuplementos.com.br',
+                        'discount' => '10',
+                        'categories' => array('Whey Protein', 'Creatina', 'Vitaminas'),
+                    ),
+                    array(
+                        'name' => 'Vitafor',
+                        'description' => 'Vitaminas e minerais essenciais para o bom funcionamento do organismo.',
+                        'url' => 'https://www.vitafor.com.br',
+                        'discount' => '15',
+                        'categories' => array('Ômega 3', 'Probióticos', 'Colágeno'),
+                    ),
+                    array(
+                        'name' => 'Essential Nutrition',
+                        'description' => 'Nutrição funcional de alta performance com ingredientes selecionados.',
+                        'url' => 'https://www.essentialnutrition.com.br',
+                        'discount' => null,
+                        'categories' => array('Proteínas', 'Superfoods', 'Fibras'),
+                    ),
+                    array(
+                        'name' => 'Puravida',
+                        'description' => 'Produtos naturais e orgânicos para uma vida mais saudável.',
+                        'url' => 'https://www.puravida.com.br',
+                        'discount' => '5',
+                        'categories' => array('Orgânicos', 'Sem Glúten', 'Naturais'),
+                    ),
+                    array(
+                        'name' => 'Now Foods',
+                        'description' => 'Marca americana referência mundial em suplementação de qualidade.',
+                        'url' => 'https://www.nowfoods.com',
+                        'discount' => null,
+                        'categories' => array('Vitaminas', 'Minerais', 'Ervas'),
+                    ),
+                    array(
+                        'name' => 'Integralmedica',
+                        'description' => 'Suplementos esportivos nacionais com tecnologia de ponta.',
+                        'url' => 'https://www.integralmedica.com.br',
+                        'discount' => '10',
+                        'categories' => array('Pré-treino', 'BCAA', 'Recuperação'),
+                    ),
+                );
+                
+                foreach ($partners as $index => $partner) :
+            ?>
+            <article class="card animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                <?php if ($partner['discount']) : ?>
+                <span class="section-badge" style="background: hsl(var(--accent)); color: white; margin-bottom: var(--spacing-sm);">
+                    <?php echo esc_html($partner['discount']); ?>% OFF para pacientes
+                </span>
+                <?php endif; ?>
+                
+                <h3 class="card-title"><?php echo esc_html($partner['name']); ?></h3>
+                <p class="card-text"><?php echo esc_html($partner['description']); ?></p>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: var(--spacing-sm) 0;">
+                    <?php foreach ($partner['categories'] as $category) : ?>
+                    <span style="font-size: 0.75rem; padding: 0.25rem 0.75rem; background: hsl(var(--muted)); border-radius: var(--radius-full); color: hsl(var(--muted-foreground));">
+                        <?php echo esc_html($category); ?>
+                    </span>
+                    <?php endforeach; ?>
+                </div>
+                
+                <a href="<?php echo esc_url($partner['url']); ?>" class="btn btn-primary mt-3" target="_blank" rel="noopener noreferrer">
+                    Visitar Site
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+                </a>
+            </article>
+            <?php
+                endforeach;
+            endif;
+            ?>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits -->
+<section class="about-section section-lg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <span class="section-badge">Vantagens</span>
+            <h2 class="section-title">Por Que Nossos Parceiros?</h2>
+        </div>
+        
+        <div class="services-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <?php
+            $benefits = array(
+                array('icon' => 'check', 'title' => 'Qualidade', 'description' => 'Produtos certificados e de alta qualidade'),
+                array('icon' => 'percent', 'title' => 'Descontos', 'description' => 'Condições especiais para pacientes'),
+                array('icon' => 'truck', 'title' => 'Entrega', 'description' => 'Envio rápido para todo o Brasil'),
+                array('icon' => 'shield', 'title' => 'Segurança', 'description' => 'Sites confiáveis e seguros'),
+            );
+            
+            foreach ($benefits as $benefit) :
+            ?>
+            <div class="card animate-on-scroll" style="text-align: center;">
+                <div class="service-icon" style="margin: 0 auto var(--spacing-md);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3 class="card-title"><?php echo esc_html($benefit['title']); ?></h3>
+                <p class="card-text"><?php echo esc_html($benefit['description']); ?></p>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section section-lg">
+    <div class="container">
+        <div class="cta-content animate-on-scroll">
+            <h2 class="cta-title">Dúvidas sobre Suplementação?</h2>
+            <p class="cta-description">
+                Consulte nossos nutricionistas para receber orientação personalizada 
+                sobre os melhores suplementos para você.
+            </p>
+            <div class="cta-buttons">
+                <?php
+                $whatsapp = get_theme_mod('whatsapp_number', '');
+                if ($whatsapp) :
+                ?>
+                <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de orientação sobre suplementação.'); ?>" 
+                   class="btn btn-white btn-lg" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                    Falar com Nutricionista
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php get_footer(); ?>
