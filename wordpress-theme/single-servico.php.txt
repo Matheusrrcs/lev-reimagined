@@ -1,197 +1,1021 @@
 <?php
 /**
- * Single Service Template
- *
- * @package Clinica_Levin
+ * Template for single service
+ * Template Post Type: servico
  */
-
 get_header();
-?>
 
-<?php while (have_posts()) : the_post(); ?>
+// Get service data
+$service_id = get_the_ID();
+$service_icon = get_post_meta($service_id, '_service_icon', true) ?: 'heart';
+$service_color = get_post_meta($service_id, '_service_color', true) ?: 'primary';
+$service_duration = get_post_meta($service_id, '_service_duration', true) ?: '50 minutos';
+$service_price = get_post_meta($service_id, '_service_price', true) ?: 'A partir de R$ 150';
+$whatsapp_number = get_theme_mod('clinica_whatsapp', '5511999999999');
+$whatsapp_message = urlencode('Olá! Gostaria de agendar uma consulta de ' . get_the_title());
 
-<!-- Hero Section -->
-<section class="hero" style="min-height: 50vh;">
-    <div class="container">
-        <div class="hero-content">
-            <div class="hero-text animate-fadeInUp">
-                <span class="hero-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                    Serviço
-                </span>
-                
-                <h1 class="hero-title"><?php the_title(); ?></h1>
-                
-                <?php if (has_excerpt()) : ?>
-                <p class="hero-description"><?php the_excerpt(); ?></p>
-                <?php endif; ?>
-                
-                <div class="hero-buttons">
-                    <?php
-                    $whatsapp = get_theme_mod('whatsapp_number', '');
-                    if ($whatsapp) :
-                    ?>
-                    <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta de ' . get_the_title()); ?>" 
-                       class="btn btn-primary btn-lg" 
-                       target="_blank" 
-                       rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        Agendar Consulta
-                    </a>
-                    <?php endif; ?>
-                    
-                    <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="btn btn-secondary btn-lg">
-                        Ver Outros Serviços
-                    </a>
-                </div>
-            </div>
-            
-            <?php if (has_post_thumbnail()) : ?>
-            <div class="hero-image-wrapper animate-fadeInUp delay-200">
-                <img src="<?php the_post_thumbnail_url('hero-image'); ?>" alt="<?php the_title_attribute(); ?>" class="hero-image">
-            </div>
-            <?php endif; ?>
-        </div>
-    </div>
-</section>
+// Benefits
+$benefits = get_post_meta($service_id, '_service_benefits', true);
+if (empty($benefits)) {
+    $benefits = array(
+        'Avaliação inicial completa',
+        'Plano de tratamento personalizado',
+        'Acompanhamento contínuo',
+        'Materiais de apoio inclusos',
+        'Suporte entre sessões',
+        'Reavaliações periódicas'
+    );
+}
 
-<!-- Service Content -->
-<section class="section-lg">
-    <div class="container" style="max-width: 900px;">
-        <div class="about-grid" style="gap: var(--spacing-2xl);">
-            <!-- Main Content -->
-            <div class="animate-on-scroll" style="grid-column: span 2;">
-                <div class="post-content" style="font-size: 1.125rem; line-height: 1.8;">
-                    <?php the_content(); ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+// What to expect
+$expectations = get_post_meta($service_id, '_service_expectations', true);
+if (empty($expectations)) {
+    $expectations = array(
+        array(
+            'title' => 'Primeira Consulta',
+            'description' => 'Avaliação completa do seu histórico e definição de objetivos personalizados.'
+        ),
+        array(
+            'title' => 'Plano de Tratamento',
+            'description' => 'Desenvolvimento de um plano específico baseado nas suas necessidades.'
+        ),
+        array(
+            'title' => 'Acompanhamento',
+            'description' => 'Sessões regulares com ajustes conforme sua evolução.'
+        ),
+        array(
+            'title' => 'Resultados',
+            'description' => 'Avaliação contínua dos resultados e manutenção dos ganhos.'
+        )
+    );
+}
 
-<!-- Features -->
-<?php
-$features = get_post_meta(get_the_ID(), 'service_features', true);
-if ($features) :
-    $features_array = array_filter(explode("\n", $features));
-?>
-<section class="about-section section-lg">
-    <div class="container">
-        <div class="section-header animate-on-scroll">
-            <span class="section-badge">O Que Inclui</span>
-            <h2 class="section-title">Benefícios do Serviço</h2>
-        </div>
-        
-        <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-            <?php foreach ($features_array as $index => $feature) : ?>
-            <div class="card animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s; display: flex; align-items: flex-start; gap: var(--spacing-sm);">
-                <div class="service-icon" style="flex-shrink: 0; width: 40px; height: 40px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                </div>
-                <p style="margin: 0; font-weight: 500;"><?php echo esc_html(trim($feature)); ?></p>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
-
-<!-- How it Works -->
-<section class="section-lg">
-    <div class="container">
-        <div class="section-header animate-on-scroll">
-            <span class="section-badge">Processo</span>
-            <h2 class="section-title">Como Funciona</h2>
-        </div>
-        
-        <div class="services-grid" style="grid-template-columns: repeat(4, 1fr);">
-            <?php
-            $steps = array(
-                array('number' => '01', 'title' => 'Agendamento', 'description' => 'Entre em contato e escolha o melhor horário'),
-                array('number' => '02', 'title' => 'Avaliação', 'description' => 'Consulta inicial para entender suas necessidades'),
-                array('number' => '03', 'title' => 'Planejamento', 'description' => 'Criamos um plano personalizado para você'),
-                array('number' => '04', 'title' => 'Acompanhamento', 'description' => 'Suporte contínuo para alcançar seus objetivos'),
-            );
-            
-            foreach ($steps as $step) :
-            ?>
-            <div class="card animate-on-scroll" style="text-align: center;">
-                <div style="width: 50px; height: 50px; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin: 0 auto var(--spacing-md);">
-                    <?php echo esc_html($step['number']); ?>
-                </div>
-                <h3 class="card-title" style="font-size: 1rem;"><?php echo esc_html($step['title']); ?></h3>
-                <p class="card-text" style="font-size: 0.875rem;"><?php echo esc_html($step['description']); ?></p>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-
-<?php endwhile; ?>
-
-<!-- Other Services -->
-<?php
-$other_services = new WP_Query(array(
-    'post_type'      => 'servico',
+// Related services
+$related_services = get_posts(array(
+    'post_type' => 'servico',
     'posts_per_page' => 3,
-    'post__not_in'   => array(get_the_ID()),
-    'orderby'        => 'rand',
+    'post__not_in' => array($service_id),
+    'orderby' => 'rand'
 ));
-
-if ($other_services->have_posts()) :
 ?>
-<section class="about-section section-lg">
-    <div class="container">
-        <div class="section-header animate-on-scroll">
-            <span class="section-badge">Explore</span>
-            <h2 class="section-title">Outros Serviços</h2>
+
+<main class="service-detail-page">
+    <!-- Hero Section -->
+    <section class="service-hero">
+        <div class="hero-background">
+            <div class="hero-gradient"></div>
+            <div class="hero-pattern"></div>
+            <div class="floating-orb orb-1"></div>
+            <div class="floating-orb orb-2"></div>
+            <div class="floating-orb orb-3"></div>
         </div>
         
-        <div class="services-grid">
-            <?php while ($other_services->have_posts()) : $other_services->the_post(); ?>
-            <article class="service-card animate-on-scroll">
-                <?php if (has_post_thumbnail()) : ?>
-                <img src="<?php the_post_thumbnail_url('service-card'); ?>" alt="<?php the_title_attribute(); ?>" class="service-image">
-                <?php endif; ?>
-                
-                <div class="service-content">
-                    <h3 class="service-title"><?php the_title(); ?></h3>
-                    <p class="service-description"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
-                    <a href="<?php the_permalink(); ?>" class="btn btn-outline">
-                        Saiba Mais
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    </a>
-                </div>
-            </article>
-            <?php endwhile; wp_reset_postdata(); ?>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb animate-on-scroll">
+                <a href="<?php echo home_url(); ?>">Início</a>
+                <span class="separator">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </span>
+                <a href="<?php echo home_url('/servicos'); ?>">Serviços</a>
+                <span class="separator">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </span>
+                <span class="current"><?php the_title(); ?></span>
+            </nav>
 
-<!-- CTA -->
-<section class="cta-section section-lg">
-    <div class="container">
-        <div class="cta-content animate-on-scroll">
-            <h2 class="cta-title">Pronto para Começar?</h2>
-            <p class="cta-description">
-                Agende sua consulta agora e dê o primeiro passo para uma vida mais saudável.
-            </p>
-            <div class="cta-buttons">
-                <?php
-                $whatsapp = get_theme_mod('whatsapp_number', '');
-                if ($whatsapp) :
-                ?>
-                <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
-                   class="btn btn-white btn-lg" 
-                   target="_blank" 
-                   rel="noopener noreferrer">
-                    Agendar via WhatsApp
-                </a>
+            <div class="hero-content">
+                <div class="hero-text animate-on-scroll">
+                    <div class="service-icon-wrapper <?php echo esc_attr($service_color); ?>">
+                        <?php echo clinica_get_icon($service_icon); ?>
+                    </div>
+                    
+                    <h1 class="hero-title"><?php the_title(); ?></h1>
+                    
+                    <p class="hero-description">
+                        <?php echo get_the_excerpt() ?: wp_trim_words(get_the_content(), 30); ?>
+                    </p>
+
+                    <div class="service-meta">
+                        <div class="meta-item">
+                            <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span><?php echo esc_html($service_duration); ?></span>
+                        </div>
+                        <div class="meta-item">
+                            <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            <span><?php echo esc_html($service_price); ?></span>
+                        </div>
+                    </div>
+
+                    <div class="hero-actions">
+                        <a href="https://wa.me/<?php echo esc_attr($whatsapp_number); ?>?text=<?php echo $whatsapp_message; ?>" 
+                           class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Agendar Consulta
+                        </a>
+                        <a href="https://wa.me/<?php echo esc_attr($whatsapp_number); ?>?text=<?php echo urlencode('Olá! Tenho dúvidas sobre ' . get_the_title()); ?>" 
+                           class="btn btn-outline btn-lg" target="_blank" rel="noopener">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Tirar Dúvidas
+                        </a>
+                    </div>
+                </div>
+
+                <?php if (has_post_thumbnail()) : ?>
+                <div class="hero-image animate-on-scroll" style="animation-delay: 0.2s;">
+                    <div class="image-wrapper">
+                        <?php the_post_thumbnail('large', array('class' => 'service-image')); ?>
+                        <div class="image-overlay"></div>
+                    </div>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <!-- Content Section -->
+    <section class="service-content-section">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="content-card animate-on-scroll">
+                        <h2 class="section-title">
+                            <span class="title-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </span>
+                            Sobre o Serviço
+                        </h2>
+                        <div class="content-text">
+                            <?php the_content(); ?>
+                        </div>
+                    </div>
+
+                    <!-- What to Expect -->
+                    <div class="expectations-card animate-on-scroll">
+                        <h2 class="section-title">
+                            <span class="title-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                </svg>
+                            </span>
+                            O Que Esperar
+                        </h2>
+                        <div class="expectations-grid">
+                            <?php foreach ($expectations as $index => $item) : ?>
+                            <div class="expectation-item animate-on-scroll" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                                <div class="expectation-number"><?php echo str_pad($index + 1, 2, '0', STR_PAD_LEFT); ?></div>
+                                <div class="expectation-content">
+                                    <h3><?php echo esc_html($item['title']); ?></h3>
+                                    <p><?php echo esc_html($item['description']); ?></p>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="service-sidebar">
+                    <!-- Benefits Card -->
+                    <div class="benefits-card animate-on-scroll">
+                        <h3 class="sidebar-title">
+                            <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 11 12 14 22 4"></polyline>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            Benefícios Inclusos
+                        </h3>
+                        <ul class="benefits-list">
+                            <?php foreach ($benefits as $index => $benefit) : ?>
+                            <li class="benefit-item" style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <span><?php echo esc_html($benefit); ?></span>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <!-- CTA Card -->
+                    <div class="cta-card animate-on-scroll">
+                        <div class="cta-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </div>
+                        <h3>Pronto para Começar?</h3>
+                        <p>Agende sua consulta e dê o primeiro passo para sua transformação.</p>
+                        <a href="https://wa.me/<?php echo esc_attr($whatsapp_number); ?>?text=<?php echo $whatsapp_message; ?>" 
+                           class="btn btn-primary btn-block" target="_blank" rel="noopener">
+                            Agendar Agora
+                        </a>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="contact-card animate-on-scroll">
+                        <h3 class="sidebar-title">
+                            <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            Dúvidas?
+                        </h3>
+                        <p>Entre em contato conosco para mais informações sobre este serviço.</p>
+                        <div class="contact-methods">
+                            <a href="https://wa.me/<?php echo esc_attr($whatsapp_number); ?>" class="contact-link whatsapp">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                </svg>
+                                WhatsApp
+                            </a>
+                            <a href="mailto:<?php echo antispambot(get_theme_mod('clinica_email', 'contato@clinicalevin.com.br')); ?>" class="contact-link email">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                                E-mail
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Services -->
+    <?php if (!empty($related_services)) : ?>
+    <section class="related-services-section">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge">Explore Mais</span>
+                <h2 class="section-title-lg">Outros Serviços</h2>
+                <p class="section-subtitle">Conheça outras formas de cuidar da sua saúde</p>
+            </div>
+
+            <div class="services-grid">
+                <?php foreach ($related_services as $index => $service) : 
+                    $icon = get_post_meta($service->ID, '_service_icon', true) ?: 'heart';
+                    $color = get_post_meta($service->ID, '_service_color', true) ?: 'primary';
+                ?>
+                <a href="<?php echo get_permalink($service->ID); ?>" 
+                   class="service-card animate-on-scroll" 
+                   style="animation-delay: <?php echo $index * 0.1; ?>s;">
+                    <div class="service-card-icon <?php echo esc_attr($color); ?>">
+                        <?php echo clinica_get_icon($icon); ?>
+                    </div>
+                    <h3 class="service-card-title"><?php echo esc_html($service->post_title); ?></h3>
+                    <p class="service-card-excerpt">
+                        <?php echo wp_trim_words($service->post_excerpt ?: $service->post_content, 15); ?>
+                    </p>
+                    <span class="service-card-link">
+                        Saiba mais
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </span>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- CTA Section -->
+    <?php get_template_part('template-parts/cta-section'); ?>
+</main>
+
+<style>
+/* Service Detail Page Styles */
+.service-detail-page {
+    --service-primary: hsl(152, 57%, 30%);
+    --service-primary-light: hsl(152, 57%, 40%);
+}
+
+/* Hero Section */
+.service-hero {
+    position: relative;
+    padding: 8rem 0 5rem;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.service-hero .hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.service-hero .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, 
+        hsl(152, 57%, 15%) 0%, 
+        hsl(168, 76%, 20%) 50%, 
+        hsl(192, 85%, 25%) 100%);
+}
+
+.service-hero .hero-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.service-hero .floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: float 20s ease-in-out infinite;
+}
+
+.service-hero .orb-1 {
+    width: 400px;
+    height: 400px;
+    background: hsl(152, 57%, 40%);
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+}
+
+.service-hero .orb-2 {
+    width: 300px;
+    height: 300px;
+    background: hsl(168, 76%, 42%);
+    bottom: -50px;
+    left: -50px;
+    animation-delay: -5s;
+}
+
+.service-hero .orb-3 {
+    width: 200px;
+    height: 200px;
+    background: hsl(192, 85%, 56%);
+    top: 50%;
+    left: 50%;
+    animation-delay: -10s;
+}
+
+.service-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.breadcrumb a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb a:hover {
+    color: white;
+}
+
+.breadcrumb .separator {
+    opacity: 0.5;
+}
+
+.breadcrumb .current {
+    color: white;
+    font-weight: 500;
+}
+
+/* Hero Content */
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-text {
+    color: white;
+}
+
+.service-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.service-icon-wrapper svg {
+    width: 40px;
+    height: 40px;
+    stroke: white;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 2rem;
+}
+
+.service-meta {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.meta-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Hero Image */
+.hero-image {
+    position: relative;
+}
+
+.hero-image .image-wrapper {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+}
+
+.hero-image .service-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.hero-image .image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.2) 0%, 
+        transparent 50%);
+}
+
+/* Content Section */
+.service-content-section {
+    padding: 5rem 0;
+    background: var(--color-background);
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.content-card,
+.expectations-card {
+    background: var(--color-card);
+    border-radius: 20px;
+    padding: 2.5rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    margin-bottom: 1.5rem;
+}
+
+.title-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    border-radius: 8px;
+    color: white;
+}
+
+.title-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.content-text {
+    color: var(--color-muted-foreground);
+    line-height: 1.8;
+}
+
+.content-text p {
+    margin-bottom: 1rem;
+}
+
+.content-text h2,
+.content-text h3 {
+    color: var(--color-foreground);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Expectations */
+.expectations-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.expectation-item {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: var(--color-muted);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.expectation-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.expectation-number {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 700;
+    border-radius: 12px;
+}
+
+.expectation-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    margin-bottom: 0.5rem;
+}
+
+.expectation-content p {
+    color: var(--color-muted-foreground);
+    line-height: 1.6;
+}
+
+/* Sidebar */
+.service-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 100px;
+}
+
+.benefits-card,
+.cta-card,
+.contact-card {
+    background: var(--color-card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    margin-bottom: 1.25rem;
+}
+
+.sidebar-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-primary);
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-muted-foreground);
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.benefit-item .check-icon {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    color: var(--color-primary);
+}
+
+/* CTA Card */
+.cta-card {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    text-align: center;
+}
+
+.cta-card .cta-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cta-card .cta-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.cta-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.cta-card p {
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    font-size: 0.9375rem;
+}
+
+.cta-card .btn-primary {
+    background: white;
+    color: var(--color-primary);
+}
+
+.cta-card .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+/* Contact Card */
+.contact-card p {
+    color: var(--color-muted-foreground);
+    margin-bottom: 1rem;
+    font-size: 0.9375rem;
+}
+
+.contact-methods {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.contact-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.contact-link.whatsapp {
+    background: #25D366;
+    color: white;
+}
+
+.contact-link.whatsapp:hover {
+    background: #128C7E;
+}
+
+.contact-link.email {
+    background: var(--color-muted);
+    color: var(--color-foreground);
+}
+
+.contact-link.email:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.contact-link svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Related Services Section */
+.related-services-section {
+    padding: 5rem 0;
+    background: var(--color-muted);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.1), 
+        rgba(6, 182, 212, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.section-title-lg {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+    margin-bottom: 0.75rem;
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-muted-foreground);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.service-card {
+    background: var(--color-card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-primary);
+}
+
+.service-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.1), 
+        rgba(6, 182, 212, 0.1));
+}
+
+.service-card-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--color-primary);
+}
+
+.service-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    margin-bottom: 0.75rem;
+}
+
+.service-card-excerpt {
+    color: var(--color-muted-foreground);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+.service-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    transition: gap 0.3s ease;
+}
+
+.service-card:hover .service-card-link {
+    gap: 0.75rem;
+}
+
+.service-card-link svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-card-link svg {
+    transform: translateX(4px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .hero-text {
+        order: 1;
+    }
+    
+    .hero-image {
+        order: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .service-icon-wrapper {
+        margin: 0 auto 1.5rem;
+    }
+    
+    .service-meta {
+        justify-content: center;
+    }
+    
+    .hero-actions {
+        justify-content: center;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-sidebar {
+        position: static;
+    }
+    
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .service-hero {
+        padding: 6rem 0 3rem;
+        min-height: auto;
+    }
+    
+    .hero-title {
+        font-size: 2.25rem;
+    }
+    
+    .hero-description {
+        font-size: 1.0625rem;
+    }
+    
+    .service-meta {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+    }
+    
+    .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .content-card,
+    .expectations-card,
+    .benefits-card,
+    .cta-card,
+    .contact-card {
+        padding: 1.5rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-title-lg {
+        font-size: 2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
 
 <?php get_footer(); ?>
