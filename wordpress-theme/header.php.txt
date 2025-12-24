@@ -19,16 +19,13 @@
         <div class="header-inner">
             <!-- Logo -->
             <a href="<?php echo esc_url(home_url('/')); ?>" class="site-logo">
-                <?php
-                if (has_custom_logo()) {
-                    the_custom_logo();
-                } else {
-                    echo esc_html(get_bloginfo('name'));
-                }
-                ?>
+                <div class="logo-icon">
+                    <span>L</span>
+                </div>
+                <span class="logo-text"><?php bloginfo('name'); ?></span>
             </a>
 
-            <!-- Navigation -->
+            <!-- Desktop Navigation -->
             <nav class="main-nav" id="main-nav" aria-label="<?php esc_attr_e('Menu Principal', 'clinica-levin'); ?>">
                 <?php
                 wp_nav_menu(array(
@@ -39,7 +36,7 @@
                     'fallback_cb'    => function() {
                         ?>
                         <a href="<?php echo esc_url(home_url('/')); ?>" class="nav-link <?php echo is_front_page() ? 'active' : ''; ?>">Início</a>
-                        <a href="<?php echo esc_url(home_url('/sobre')); ?>" class="nav-link <?php echo is_page('sobre') ? 'active' : ''; ?>">Sobre</a>
+                        <a href="<?php echo esc_url(home_url('/sobre')); ?>" class="nav-link <?php echo is_page('sobre') ? 'active' : ''; ?>">Sobre Nós</a>
                         <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="nav-link <?php echo is_page('servicos') || is_singular('servico') ? 'active' : ''; ?>">Serviços</a>
                         <a href="<?php echo esc_url(home_url('/produtos')); ?>" class="nav-link <?php echo is_page('produtos') ? 'active' : ''; ?>">Produtos</a>
                         <a href="<?php echo esc_url(home_url('/blog')); ?>" class="nav-link <?php echo is_home() || is_single() ? 'active' : ''; ?>">Blog</a>
@@ -49,14 +46,13 @@
                 ?>
                 
                 <!-- CTA Button -->
-                <?php
-                $whatsapp = get_theme_mod('whatsapp_number', '');
-                if ($whatsapp) :
-                ?>
-                <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>?text=<?php echo urlencode('Olá! Gostaria de agendar uma consulta.'); ?>" 
-                   class="btn btn-primary" 
+                <?php $whatsapp = get_theme_mod('whatsapp_number', ''); ?>
+                <?php if ($whatsapp) : ?>
+                <a href="<?php echo esc_url(clinica_levin_get_whatsapp_link()); ?>" 
+                   class="btn btn-primary btn-icon-rotate" 
                    target="_blank" 
                    rel="noopener noreferrer">
+                    <?php echo clinica_levin_get_icon('phone'); ?>
                     Agendar Consulta
                 </a>
                 <?php endif; ?>
@@ -69,6 +65,28 @@
                 <span></span>
             </button>
         </div>
+
+        <!-- Mobile Navigation -->
+        <nav class="mobile-nav" id="mobile-nav" aria-label="<?php esc_attr_e('Menu Mobile', 'clinica-levin'); ?>">
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="<?php echo is_front_page() ? 'active' : ''; ?>">Início</a>
+            <a href="<?php echo esc_url(home_url('/sobre')); ?>" class="<?php echo is_page('sobre') ? 'active' : ''; ?>">Sobre Nós</a>
+            <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="<?php echo is_page('servicos') || is_singular('servico') ? 'active' : ''; ?>">Serviços</a>
+            <a href="<?php echo esc_url(home_url('/produtos')); ?>" class="<?php echo is_page('produtos') ? 'active' : ''; ?>">Produtos</a>
+            <a href="<?php echo esc_url(home_url('/blog')); ?>" class="<?php echo is_home() || is_single() ? 'active' : ''; ?>">Blog</a>
+            
+            <?php if ($whatsapp) : ?>
+            <div style="padding-top: 1rem;">
+                <a href="<?php echo esc_url(clinica_levin_get_whatsapp_link()); ?>" 
+                   class="btn btn-primary" 
+                   style="width: 100%;"
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                    <?php echo clinica_levin_get_icon('phone'); ?>
+                    Agendar Consulta
+                </a>
+            </div>
+            <?php endif; ?>
+        </nav>
     </div>
 </header>
 
