@@ -38,7 +38,108 @@
                         <a href="<?php echo esc_url(home_url('/')); ?>" class="nav-link <?php echo is_front_page() ? 'active' : ''; ?>">Início</a>
                         <a href="<?php echo esc_url(home_url('/sobre')); ?>" class="nav-link <?php echo is_page('sobre') ? 'active' : ''; ?>">Sobre Nós</a>
                         <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="nav-link <?php echo is_page('servicos') || is_singular('servico') ? 'active' : ''; ?>">Serviços</a>
-                        <a href="<?php echo esc_url(home_url('/produtos')); ?>" class="nav-link <?php echo is_page('produtos') ? 'active' : ''; ?>">Produtos</a>
+                        
+                        <!-- Produtos Dropdown -->
+                        <div class="nav-dropdown">
+                            <button class="nav-link nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                                Produtos
+                                <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m6 9 6 6 6-6"/>
+                                </svg>
+                            </button>
+                            <div class="nav-dropdown-menu">
+                                <?php
+                                // Buscar produtos cadastrados
+                                $produtos = new WP_Query(array(
+                                    'post_type'      => 'produto',
+                                    'posts_per_page' => -1,
+                                    'orderby'        => 'menu_order',
+                                    'order'          => 'ASC',
+                                ));
+                                
+                                if ($produtos->have_posts()) :
+                                    while ($produtos->have_posts()) : $produtos->the_post();
+                                        $external_url = get_post_meta(get_the_ID(), 'product_url', true);
+                                        if ($external_url) :
+                                ?>
+                                <a href="<?php echo esc_url($external_url); ?>" class="dropdown-item" target="_blank" rel="noopener noreferrer">
+                                    <span class="dropdown-item-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" x2="21" y1="14" y2="3"/>
+                                        </svg>
+                                    </span>
+                                    <span class="dropdown-item-text">
+                                        <span class="dropdown-item-title"><?php the_title(); ?></span>
+                                        <?php if (has_excerpt()) : ?>
+                                        <span class="dropdown-item-desc"><?php echo wp_trim_words(get_the_excerpt(), 8); ?></span>
+                                        <?php endif; ?>
+                                    </span>
+                                </a>
+                                <?php 
+                                        endif;
+                                    endwhile;
+                                    wp_reset_postdata();
+                                else :
+                                    // Fallback com links padrão caso não tenha produtos cadastrados
+                                ?>
+                                <a href="https://www.gsuplementos.com.br" class="dropdown-item" target="_blank" rel="noopener noreferrer">
+                                    <span class="dropdown-item-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" x2="21" y1="14" y2="3"/>
+                                        </svg>
+                                    </span>
+                                    <span class="dropdown-item-text">
+                                        <span class="dropdown-item-title">Growth Supplements</span>
+                                        <span class="dropdown-item-desc">Suplementação Esportiva</span>
+                                    </span>
+                                </a>
+                                <a href="https://www.vitafor.com.br" class="dropdown-item" target="_blank" rel="noopener noreferrer">
+                                    <span class="dropdown-item-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" x2="21" y1="14" y2="3"/>
+                                        </svg>
+                                    </span>
+                                    <span class="dropdown-item-text">
+                                        <span class="dropdown-item-title">Vitafor</span>
+                                        <span class="dropdown-item-desc">Vitaminas e Minerais</span>
+                                    </span>
+                                </a>
+                                <a href="https://www.essentialnutrition.com.br" class="dropdown-item" target="_blank" rel="noopener noreferrer">
+                                    <span class="dropdown-item-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" x2="21" y1="14" y2="3"/>
+                                        </svg>
+                                    </span>
+                                    <span class="dropdown-item-text">
+                                        <span class="dropdown-item-title">Essential Nutrition</span>
+                                        <span class="dropdown-item-desc">Nutrição Premium</span>
+                                    </span>
+                                </a>
+                                <a href="https://www.puravida.com.br" class="dropdown-item" target="_blank" rel="noopener noreferrer">
+                                    <span class="dropdown-item-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" x2="21" y1="14" y2="3"/>
+                                        </svg>
+                                    </span>
+                                    <span class="dropdown-item-text">
+                                        <span class="dropdown-item-title">Puravida</span>
+                                        <span class="dropdown-item-desc">Produtos Naturais</span>
+                                    </span>
+                                </a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        
                         <a href="<?php echo esc_url(home_url('/blog')); ?>" class="nav-link <?php echo is_home() || is_single() ? 'active' : ''; ?>">Blog</a>
                         <?php
                     }
@@ -71,7 +172,73 @@
             <a href="<?php echo esc_url(home_url('/')); ?>" class="<?php echo is_front_page() ? 'active' : ''; ?>">Início</a>
             <a href="<?php echo esc_url(home_url('/sobre')); ?>" class="<?php echo is_page('sobre') ? 'active' : ''; ?>">Sobre Nós</a>
             <a href="<?php echo esc_url(home_url('/servicos')); ?>" class="<?php echo is_page('servicos') || is_singular('servico') ? 'active' : ''; ?>">Serviços</a>
-            <a href="<?php echo esc_url(home_url('/produtos')); ?>" class="<?php echo is_page('produtos') ? 'active' : ''; ?>">Produtos</a>
+            
+            <!-- Mobile Produtos Accordion -->
+            <div class="mobile-accordion">
+                <button class="mobile-accordion-trigger" aria-expanded="false">
+                    Produtos
+                    <svg class="accordion-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="mobile-accordion-content">
+                    <?php
+                    if ($produtos->have_posts()) :
+                        $produtos->rewind_posts();
+                        while ($produtos->have_posts()) : $produtos->the_post();
+                            $external_url = get_post_meta(get_the_ID(), 'product_url', true);
+                            if ($external_url) :
+                    ?>
+                    <a href="<?php echo esc_url($external_url); ?>" target="_blank" rel="noopener noreferrer">
+                        <?php the_title(); ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" x2="21" y1="14" y2="3"/>
+                        </svg>
+                    </a>
+                    <?php 
+                            endif;
+                        endwhile;
+                        wp_reset_postdata();
+                    else :
+                    ?>
+                    <a href="https://www.gsuplementos.com.br" target="_blank" rel="noopener noreferrer">
+                        Growth Supplements
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" x2="21" y1="14" y2="3"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.vitafor.com.br" target="_blank" rel="noopener noreferrer">
+                        Vitafor
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" x2="21" y1="14" y2="3"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.essentialnutrition.com.br" target="_blank" rel="noopener noreferrer">
+                        Essential Nutrition
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" x2="21" y1="14" y2="3"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.puravida.com.br" target="_blank" rel="noopener noreferrer">
+                        Puravida
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" x2="21" y1="14" y2="3"/>
+                        </svg>
+                    </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
             <a href="<?php echo esc_url(home_url('/blog')); ?>" class="<?php echo is_home() || is_single() ? 'active' : ''; ?>">Blog</a>
             
             <?php if ($whatsapp) : ?>

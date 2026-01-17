@@ -11,6 +11,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         initHeader();
         initMobileMenu();
+        initDropdowns();
+        initMobileAccordions();
         initSmoothScroll();
         initScrollAnimations();
         initNewsletter();
@@ -85,6 +87,61 @@
     }
 
     /**
+     * Desktop dropdown menus
+     */
+    function initDropdowns() {
+        const dropdowns = document.querySelectorAll('.nav-dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const trigger = dropdown.querySelector('.nav-dropdown-trigger');
+            const menu = dropdown.querySelector('.nav-dropdown-menu');
+            
+            if (!trigger || !menu) return;
+            
+            // Keyboard accessibility
+            trigger.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+                    trigger.setAttribute('aria-expanded', !isExpanded);
+                }
+            });
+            
+            // Close on escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Close when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target)) {
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    }
+
+    /**
+     * Mobile accordion menus
+     */
+    function initMobileAccordions() {
+        const accordions = document.querySelectorAll('.mobile-accordion');
+        
+        accordions.forEach(accordion => {
+            const trigger = accordion.querySelector('.mobile-accordion-trigger');
+            const content = accordion.querySelector('.mobile-accordion-content');
+            
+            if (!trigger || !content) return;
+            
+            trigger.addEventListener('click', function() {
+                const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+                trigger.setAttribute('aria-expanded', !isExpanded);
+                content.classList.toggle('active');
+            });
+        });
+    }
      * Smooth scroll for anchor links
      */
     function initSmoothScroll() {
